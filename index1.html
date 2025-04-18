@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fake News Detector</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+
+    .image {
+      width: 100%;
+      max-height: 350px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      padding: 15px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      margin: 25px auto;
+      padding: 12px 40px;
+      font-size: 18px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .fake { color: #dc2626; }
+    .real { color: #16a34a; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📰 Fake News Detector</h1>
+     <!-- Top image -->
+     <img class="image" src="C:\Users\Manoj\Documents\fake_news_detection\Screenshot (87).png" alt="News Image 1"/>
+
+     <!-- Middle image -->
+    <textarea id="newsInput" placeholder="Paste your news article here..."></textarea>
+    <button onclick="checkFakeNews()">Check</button>
+    <div class="result" id="resultText"></div>
+
+   
+    <img class="image" src="C:\Users\Manoj\Documents\fake_news_detection\Screenshot (91).png" alt="News Image 2"/>
+
+   
+
+    <!-- Bottom image -->
+    <img class="image" src="C:\Users\Manoj\Documents\fake_news_detection\Screenshot (94).png" alt="News Image 3"/>
+
+    
+  </div>
+
+  <script>
+    async function checkFakeNews() {
+      const content = document.getElementById("newsInput").value;
+
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: content })
+      });
+
+      const data = await response.json();
+      const resultBox = document.getElementById("resultText");
+
+      if (data.result === "Fake") {
+        resultBox.textContent = "🚨 This is FAKE news!";
+        resultBox.className = "result fake";
+      } else if (data.result === "Real") {
+        resultBox.textContent = "✅ This is REAL news!";
+        resultBox.className = "result real";
+      } else {
+        resultBox.textContent = "⚠️ Unable to determine.";
+        resultBox.className = "result";
+      }
+    }
+  </script>
+</body>
+</html>
